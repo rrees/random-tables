@@ -237,6 +237,35 @@ Hello.prototype.teardown = Hello.prototype.destroy = function destroy ( detach )
 	this._torndown = true;
 };
 
+function selectFrom(upperLimit) {
+	return Math.floor(Math.random() * upperLimit);
+}
+
+function choose(array) {
+	return array[selectFrom(array.length)]
+}
+
+function animal$1() {
+
+	const animals = ["Dog", "Cat", "Goat"];
+
+	return choose(animals);
+}
+
+var random = {
+	animal: animal$1
+};
+
+var template = (function () {
+return {
+	data() {
+		return {
+			animal: random.animal()
+		}
+	}
+}
+}());
+
 function create_main_fragment$1 ( state, component ) {
 	var text_1_value;
 
@@ -266,7 +295,7 @@ function create_main_fragment$1 ( state, component ) {
 
 function Animal$1 ( options ) {
 	options = options || {};
-	this._state = options.data || {};
+	this._state = assign( template.data(), options.data );
 
 	this._observers = {
 		pre: Object.create( null ),
@@ -304,25 +333,6 @@ Animal$1.prototype.teardown = Animal$1.prototype.destroy = function destroy ( de
 	this._torndown = true;
 };
 
-function selectFrom(upperLimit) {
-	return Math.floor(Math.random() * upperLimit);
-}
-
-function choose(array) {
-	return array[selectFrom(array.length)]
-}
-
-function animal$1() {
-
-	const animals = ["Dog", "Cat", "Goat"];
-
-	return choose(animals);
-}
-
-var random = {
-	animal: animal$1
-};
-
 console.log('Hello world');
 
 const hello = new Hello({
@@ -333,10 +343,7 @@ const hello = new Hello({
 });
 
 const animal = new Animal$1({
-	target: document.getElementById('animal-app'),
-	data: {
-		animal: random.animal()
-	}
+	target: document.getElementById('animal-app')
 });
 
 }());

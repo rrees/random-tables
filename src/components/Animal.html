@@ -1,2 +1,14 @@
 
 <p>It's a {{animal}}</p>
+
+<script>
+import random from '../random/index';
+
+export default {
+	data() {
+		return {
+			animal: random.animal()
+		}
+	}
+}
+</script>

@@ -1,8 +1,6 @@
 import Hello from './Hello.html';
 import RandomAnimal from './components/Animal.html';
 
-import random from './random/index';
-
 console.log('Hello world');
 
 const hello = new Hello({
@@ -13,8 +11,5 @@ const hello = new Hello({
 });
 
 const animal = new RandomAnimal({
-	target: document.getElementById('animal-app'),
-	data: {
-		animal: random.animal()
-	}
+	target: document.getElementById('animal-app')
 });
