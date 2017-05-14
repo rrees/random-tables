@@ -245,6 +245,16 @@ Hello.prototype.teardown = Hello.prototype.destroy = function destroy ( detach )
 	this._torndown = true;
 };
 
+const animals = ["Dog", "Cat", "Goat", "Monkey", "Whale", "Shark", "Possum"];
+
+function animal$1() {
+	return random.choose(animals);
+}
+
+var animals$1 = {
+	animal: animal$1
+};
+
 function selectFrom(upperLimit) {
 	return Math.floor(Math.random() * upperLimit);
 }
@@ -253,15 +263,9 @@ function choose(array) {
 	return array[selectFrom(array.length)]
 }
 
-function animal$1() {
-
-	const animals = ["Dog", "Cat", "Goat"];
-
-	return choose(animals);
-}
-
 var random = {
-	animal: animal$1
+	choose: choose,
+	animal: animals$1.animal
 };
 
 var template = (function () {
