@@ -9,7 +9,7 @@ categories: demo
 
 <section id="animal-app"></section>
 
-<script src="/js/app.js"></script>
+<script src="{{ '/js/app.js' | relative_url }}"></script>
 
 
 

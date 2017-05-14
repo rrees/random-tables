@@ -9,7 +9,7 @@ Hello world demo
 
 <section id="hello-app"></section>
 
-<script src="{{ /js/app.js | relative_url }}"></script>
+<script src="{{ '/js/app.js' | relative_url }}"></script>
 
 
 
