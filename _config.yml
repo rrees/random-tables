@@ -31,3 +31,4 @@ exclude:
   - Gemfile.lock
   - yarn.lock
   - src
+  - README.md
