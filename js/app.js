@@ -30,6 +30,14 @@ function createText ( data ) {
 	return document.createTextNode( data );
 }
 
+function addEventListener ( node, event, handler ) {
+	node.addEventListener( event, handler, false );
+}
+
+function removeEventListener ( node, event, handler ) {
+	node.removeEventListener( event, handler, false );
+}
+
 var transitionManager = {
 	running: false,
 	transitions: [],
@@ -262,6 +270,13 @@ return {
 		return {
 			animal: random.animal()
 		}
+	},
+	methods: {
+		newAnimal() {
+			this.set({
+				animal: random.animal()
+			});
+		}
 	}
 }
 }());
@@ -273,10 +288,21 @@ function create_main_fragment$1 ( state, component ) {
 	appendNode( createText( "It's a " ), p );
 	var text_1 = createText( text_1_value = state.animal );
 	appendNode( text_1, p );
+	var text_2 = createText( "\n\n" );
+	var button = createElement( 'button' );
+
+	function click_handler ( event ) {
+		component.newAnimal();
+	}
+
+	addEventListener( button, 'click', click_handler );
+	appendNode( createText( "No it isn't!" ), button );
 
 	return {
 		mount: function ( target, anchor ) {
 			insertNode( p, target, anchor );
+			insertNode( text_2, target, anchor );
+			insertNode( button, target, anchor );
 		},
 
 		update: function ( changed, state ) {
@@ -286,8 +312,12 @@ function create_main_fragment$1 ( state, component ) {
 		},
 
 		destroy: function ( detach ) {
+			removeEventListener( button, 'click', click_handler );
+
 			if ( detach ) {
 				detachNode( p );
+				detachNode( text_2 );
+				detachNode( button );
 			}
 		}
 	};
@@ -313,7 +343,7 @@ function Animal$1 ( options ) {
 	if ( options.target ) this._fragment.mount( options.target, null );
 }
 
-assign( Animal$1.prototype, proto );
+assign( Animal$1.prototype, template.methods, proto );
 
 Animal$1.prototype._set = function _set ( newState ) {
 	var oldState = this._state;

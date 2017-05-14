@@ -1,6 +1,8 @@
 
 <p>It's a {{animal}}</p>
 
+<button on:click="newAnimal()">No it isn't!</button>
+
 <script>
 import random from '../random/index';
 
@@ -8,6 +10,13 @@ export default {
 	data() {
 		return {
 			animal: random.animal()
+		}
+	},
+	methods: {
+		newAnimal() {
+			this.set({
+				animal: random.animal()
+			})
 		}
 	}
 }
