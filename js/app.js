@@ -367,7 +367,296 @@ Animal$1.prototype.teardown = Animal$1.prototype.destroy = function destroy ( de
 	this._torndown = true;
 };
 
-console.log('Hello world');
+function createCommonjsModule(fn, module) {
+	return module = { exports: {} }, fn(module, module.exports), module.exports;
+}
+
+var classic = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.populationTable = {
+    choices: [
+        [1, 3, 'Village'],
+        [4, 7, 'Town'],
+        [8, 9, 'City'],
+        [10, 10, 'Large city']
+    ],
+    upperLimit: 10,
+    modifier: undefined
+};
+exports.governmentTable = {
+    choices: [
+        [0, 0, "As needed"],
+        [1, 2, "Eldest"],
+        [3, 4, "Elected Head"],
+        [5, 6, "Elected council"],
+        [7, 7, "Lottery"],
+        [8, 9, "Hereditary council"],
+        [10, 11, "Hereditary ruler"]
+    ],
+    upperLimit: 10,
+    modifier: (state) => {
+        if (state.Population === "Village") {
+            return -1;
+        }
+        if (state.Population === "City"
+            || state.Population === "Large city") {
+            return 1;
+        }
+        return 0;
+    }
+};
+exports.buildings = {
+    upperLimit: 6,
+    choices: [
+        "Bridge",
+        "Market",
+        "Shrine",
+        "Speciality production",
+        "Civic center",
+        "Monument",
+        "Castle",
+    ],
+    modifier: function (state) {
+        const population = state.get('Population');
+        if (population.value === "City"
+            || population.value === "Large city") {
+            return 1;
+        }
+        return 0;
+    }
+};
+exports.specialityGoods = {
+    upperLimit: 10,
+    choices: [
+        "Cotton, wool and flax",
+        "Grain, vegetables and staples",
+        "Raw metal",
+        "Lumber",
+        "Wine, ale and spirits",
+        "Furs, hides, cloth",
+        "Livestock and pets",
+        "Leather goods",
+        "Wooden goods",
+        "Housewares",
+        "Herbs, salt, spices and sugar",
+        "Clothing, armour and weapons",
+        "Exotic fruits",
+        "Painting and sculpture",
+        "Jewelery",
+        "Perfumes and potions",
+        "Scrolls and books",
+        "Magical items",
+    ],
+    modifier: function (state) {
+        const modifiers = [
+            ["Town", 2],
+            ["City", 5],
+            ["Large city", 8]
+        ];
+        const population = state.get('Population');
+        function reducer(currentModifer, [size, modifier]) {
+            if (population.value === size) {
+                return modifier;
+            }
+            return currentModifer;
+        }
+        return modifiers.reduce(reducer, 0);
+    }
+};
+exports.rulingAttitudes = [
+    "Resistant to change",
+    "Secretive",
+    "Cynical",
+    "Lazy",
+    "Inexperienced",
+    "Crude",
+    "Forgetful",
+    "Generous",
+    "Meticulous",
+    "Idealistic"
+];
+exports.environment = [
+    'Forest',
+    'Valley',
+    'Coast',
+    'Cliff',
+    'Wasteland',
+    'Plains',
+    'Trees',
+    'Hills'
+];
+exports.sights = [
+    'Greenery',
+    'Festive colours',
+    'Drab buildings',
+    'Gleaming buildings',
+    "Organic shapes",
+    "Geometric designs"
+];
+exports.sounds = [
+    'Running water',
+    'Birds',
+    'Market hawkers',
+    'Clanging metal',
+    'Children',
+    'Livestock'
+];
+exports.smells = [
+    "Animals",
+    "Cookfires",
+    "Forest",
+    "Water",
+    "Speciality goods",
+    "Waste"
+];
+exports.threats = [
+    'Famine',
+    'Drought',
+    'Monsters',
+    "Natural disaster",
+    "Bandits",
+    "Plague",
+    "Unfair treatment",
+    "Missing people",
+    "Vermin",
+    "Isolated"
+];
+
+});
+
+var selectors = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+function select(upperLimit, lowerLimit = 0) {
+    return lowerLimit + Math.floor(Math.random() * upperLimit);
+}
+function chooseOne(key, choices, town) {
+    return town.set(key, {
+        name: key,
+        value: choices[select(choices.length)]
+    });
+}
+exports.chooseOne = chooseOne;
+function chooseFromTable(key, table, town) {
+    const choice = table.modifier ? select(table.upperLimit, 1) + table.modifier(town) : select(table.upperLimit, 1);
+    return town.set(key, {
+        name: key,
+        value: table.choices.find((row) => row[0] <= choice && choice <= row[1])[2]
+    });
+}
+exports.chooseFromTable = chooseFromTable;
+function chooseOneWithModifier(key, table, town) {
+    const choice = table.modifier ? select(table.upperLimit, 1) + table.modifier(town) : select(table.upperLimit, 1);
+    return town.set(key, {
+        name: key,
+        value: table.choices[choice]
+    });
+}
+exports.chooseOneWithModifier = chooseOneWithModifier;
+
+});
+
+var town$1 = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+
+
+function classic$$1() {
+    const townBuilders = [
+        (town) => selectors.chooseFromTable('Population', classic.populationTable, town),
+        (town) => selectors.chooseFromTable('Government', classic.governmentTable, town),
+        (town) => selectors.chooseOne('Ruling attitude', classic.rulingAttitudes, town),
+        (town) => selectors.chooseOne('Environment', classic.environment, town),
+        (town) => selectors.chooseOneWithModifier('Building', classic.buildings, town),
+        (town) => selectors.chooseOneWithModifier('Speciality goods', classic.specialityGoods, town),
+        (town) => selectors.chooseOne('Sights', classic.sights, town),
+        (town) => selectors.chooseOne('Sounds', classic.sounds, town),
+        (town) => selectors.chooseOne('Smells', classic.smells, town),
+        (town) => selectors.chooseOne('Threats', classic.threats, town),
+    ];
+    return townBuilders.reduce((town, builder) => builder(town), new Map());
+}
+exports.classic = classic$$1;
+
+});
+
+var index$1 = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+
+function generate() {
+    return town$1.classic();
+}
+exports.generate = generate;
+
+});
+
+var index_1 = index$1.generate;
+
+(function () {
+
+const town = index_1();
+
+console.log(town);
+
+}());
+
+function create_main_fragment$2 ( state, component ) {
+	var p = createElement( 'p' );
+	appendNode( createText( "Town" ), p );
+
+	return {
+		mount: function ( target, anchor ) {
+			insertNode( p, target, anchor );
+		},
+
+		destroy: function ( detach ) {
+			if ( detach ) {
+				detachNode( p );
+			}
+		}
+	};
+}
+
+function Town$1 ( options ) {
+	options = options || {};
+	this._state = options.data || {};
+
+	this._observers = {
+		pre: Object.create( null ),
+		post: Object.create( null )
+	};
+
+	this._handlers = Object.create( null );
+
+	this._root = options._root || this;
+	this._yield = options._yield;
+
+	this._torndown = false;
+
+	this._fragment = create_main_fragment$2( this._state, this );
+	if ( options.target ) this._fragment.mount( options.target, null );
+}
+
+assign( Town$1.prototype, proto );
+
+Town$1.prototype._set = function _set ( newState ) {
+	var oldState = this._state;
+	this._state = assign( {}, oldState, newState );
+	dispatchObservers( this, this._observers.pre, newState, oldState );
+	dispatchObservers( this, this._observers.post, newState, oldState );
+};
+
+Town$1.prototype.teardown = Town$1.prototype.destroy = function destroy ( detach ) {
+	this.fire( 'destroy' );
+
+	this._fragment.destroy( detach !== false );
+	this._fragment = null;
+
+	this._state = {};
+	this._torndown = true;
+};
 
 const hello = new Hello({
 	target: document.getElementById('hello-app'),
@@ -378,6 +667,10 @@ const hello = new Hello({
 
 const animal = new Animal$1({
 	target: document.getElementById('animal-app')
+});
+
+const town = new Town$1({
+	target: document.getElementById('ryuutama-town')
 });
 
 }());

@@ -1,7 +1,6 @@
 import Hello from './Hello.html';
 import RandomAnimal from './components/Animal.html';
-
-console.log('Hello world');
+import RyuutamaTown from './components/Town.html';
 
 const hello = new Hello({
 	target: document.getElementById('hello-app'),
@@ -13,3 +12,7 @@ const hello = new Hello({
 const animal = new RandomAnimal({
 	target: document.getElementById('animal-app')
 });
+
+const town = new RyuutamaTown({
+	target: document.getElementById('ryuutama-town')
+})
