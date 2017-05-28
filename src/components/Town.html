@@ -1,5 +1,12 @@
 
-<p>Town</p>
+<table>
+{{#each elements as element }}
+<tr>
+	<th>{{element.name}}</th>
+	<td>{{element.value}}</td>
+</tr>
+{{/each}}
+</table>
 
 <script>
 
@@ -8,5 +15,16 @@ import {generate} from 'ryuutama-town-generator';
 const town = generate();
 
 console.log(town);
+
+export default {
+	data() {
+		return {
+			town: generate(),
+		}
+	},
+	computed: {
+		elements: town => Array.from(town.values())
+	}
+}
 
 </script>
