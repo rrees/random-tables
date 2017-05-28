@@ -748,18 +748,61 @@ Town$1.prototype.teardown = Town$1.prototype.destroy = function destroy ( detach
 	this._torndown = true;
 };
 
+function recompute$1 ( state, newState, oldState, isInitial ) {
+	if ( isInitial || ( 'codeSequence' in newState && differs( state.codeSequence, oldState.codeSequence ) ) ) {
+		state.code = newState.code = template$2.computed.code( state.codeSequence );
+	}
+}
+
+var template$2 = (function () {
+
+const codeChoices = "012345abcde".split("");
+
+function createCode() {
+	return Array.from(new Array(40), (x, i) => random.choose(codeChoices));
+}
+
+return {
+	data() {
+		return {
+			codeSequence: createCode()
+		}
+	},
+	computed: {
+		code: (codeSequence) => codeSequence.join("")
+	}
+}
+
+}());
+
 function create_main_fragment$3 ( state, component ) {
+	var text_2_value;
+
 	var p = createElement( 'p' );
 	appendNode( createText( "A random code" ), p );
+	var text_1 = createText( "\n\n" );
+	var p_1 = createElement( 'p' );
+	var text_2 = createText( text_2_value = state.code );
+	appendNode( text_2, p_1 );
 
 	return {
 		mount: function ( target, anchor ) {
 			insertNode( p, target, anchor );
+			insertNode( text_1, target, anchor );
+			insertNode( p_1, target, anchor );
+		},
+
+		update: function ( changed, state ) {
+			if ( text_2_value !== ( text_2_value = state.code ) ) {
+				text_2.data = text_2_value;
+			}
 		},
 
 		destroy: function ( detach ) {
 			if ( detach ) {
 				detachNode( p );
+				detachNode( text_1 );
+				detachNode( p_1 );
 			}
 		}
 	};
@@ -767,7 +810,8 @@ function create_main_fragment$3 ( state, component ) {
 
 function Code ( options ) {
 	options = options || {};
-	this._state = options.data || {};
+	this._state = assign( template$2.data(), options.data );
+	recompute$1( this._state, this._state, {}, true );
 
 	this._observers = {
 		pre: Object.create( null ),
@@ -790,7 +834,9 @@ assign( Code.prototype, proto );
 Code.prototype._set = function _set ( newState ) {
 	var oldState = this._state;
 	this._state = assign( {}, oldState, newState );
+	recompute$1( this._state, newState, oldState, false );
 	dispatchObservers( this, this._observers.pre, newState, oldState );
+	this._fragment.update( newState, this._state );
 	dispatchObservers( this, this._observers.post, newState, oldState );
 };
 

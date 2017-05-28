@@ -1,0 +1,28 @@
+
+<p>A random code</p>
+
+<p>{{code}}</p>
+
+<script>
+
+import random from '../random/index';
+
+
+const codeChoices = "012345abcde".split("");
+
+function createCode() {
+	return Array.from(new Array(40), (x, i) => random.choose(codeChoices));
+}
+
+export default {
+	data() {
+		return {
+			codeSequence: createCode()
+		}
+	},
+	computed: {
+		code: (codeSequence) => codeSequence.join("")
+	}
+}
+
+</script>
