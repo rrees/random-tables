@@ -282,9 +282,9 @@ rollup-pluginutils@^2.0.1:
     estree-walker "^0.3.0"
     micromatch "^2.3.11"
 
-ryuutama-town-generator@^0.0.5:
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/ryuutama-town-generator/-/ryuutama-town-generator-0.0.5.tgz#c189cf91a2fa6acdc3ba968ff522d39091ba3ae9"
+ryuutama-town-generator@^0.0.6:
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/ryuutama-town-generator/-/ryuutama-town-generator-0.0.6.tgz#43afa6fedf8900e33e5164b0ccbbe2f7de672a34"
 
 svelte@^1.11.2:
   version "1.20.2"

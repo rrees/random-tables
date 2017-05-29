@@ -553,7 +553,7 @@ function chooseFromTable(key, table, town) {
 }
 exports.chooseFromTable = chooseFromTable;
 function chooseOneWithModifier(key, table, town) {
-    const choice = table.modifier ? select(table.upperLimit, 1) + table.modifier(town) : select(table.upperLimit, 1);
+    const choice = table.modifier ? select(table.upperLimit) + table.modifier(town) : select(table.upperLimit);
     return town.set(key, {
         name: key,
         value: table.choices[choice]
@@ -751,6 +751,7 @@ Town$1.prototype.teardown = Town$1.prototype.destroy = function destroy ( detach
 function recompute$1 ( state, newState, oldState, isInitial ) {
 	if ( isInitial || ( 'codeSequence' in newState && differs( state.codeSequence, oldState.codeSequence ) ) ) {
 		state.code = newState.code = template$2.computed.code( state.codeSequence );
+		state.length = newState.length = template$2.computed.length( state.codeSequence );
 	}
 }
 
@@ -769,14 +770,15 @@ return {
 		}
 	},
 	computed: {
-		code: (codeSequence) => codeSequence.join("")
+		code: (codeSequence) => codeSequence.join(""),
+		length: (codeSequence) => codeSequence.length,
 	}
 }
 
 }());
 
 function create_main_fragment$3 ( state, component ) {
-	var text_2_value;
+	var text_2_value, text_5_value;
 
 	var p = createElement( 'p' );
 	appendNode( createText( "A random code" ), p );
@@ -784,17 +786,28 @@ function create_main_fragment$3 ( state, component ) {
 	var p_1 = createElement( 'p' );
 	var text_2 = createText( text_2_value = state.code );
 	appendNode( text_2, p_1 );
+	var text_3 = createText( "\n\n" );
+	var p_2 = createElement( 'p' );
+	appendNode( createText( "Length: " ), p_2 );
+	var text_5 = createText( text_5_value = state.length );
+	appendNode( text_5, p_2 );
 
 	return {
 		mount: function ( target, anchor ) {
 			insertNode( p, target, anchor );
 			insertNode( text_1, target, anchor );
 			insertNode( p_1, target, anchor );
+			insertNode( text_3, target, anchor );
+			insertNode( p_2, target, anchor );
 		},
 
 		update: function ( changed, state ) {
 			if ( text_2_value !== ( text_2_value = state.code ) ) {
 				text_2.data = text_2_value;
+			}
+
+			if ( text_5_value !== ( text_5_value = state.length ) ) {
+				text_5.data = text_5_value;
 			}
 		},
 
@@ -803,6 +816,8 @@ function create_main_fragment$3 ( state, component ) {
 				detachNode( p );
 				detachNode( text_1 );
 				detachNode( p_1 );
+				detachNode( text_3 );
+				detachNode( p_2 );
 			}
 		}
 	};

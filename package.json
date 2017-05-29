@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "rollup-plugin-svelte": "^1.8.1",
-    "ryuutama-town-generator": "^0.0.5"
+    "ryuutama-town-generator": "^0.0.6"
   },
   "devDependencies": {
     "rollup-plugin-commonjs": "^8.0.2",

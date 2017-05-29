@@ -3,6 +3,8 @@
 
 <p>{{code}}</p>
 
+<p>Length: {{length}}</p>
+
 <script>
 
 import random from '../random/index';
@@ -21,7 +23,8 @@ export default {
 		}
 	},
 	computed: {
-		code: (codeSequence) => codeSequence.join("")
+		code: (codeSequence) => codeSequence.join(""),
+		length: (codeSequence) => codeSequence.length,
 	}
 }
 
