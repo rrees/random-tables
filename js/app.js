@@ -757,7 +757,7 @@ function recompute$1 ( state, newState, oldState, isInitial ) {
 
 var template$2 = (function () {
 
-const codeChoices = "012345abcde".split("");
+const codeChoices = "012345abcdefghijklmnopqrstuvwxyz".split("");
 
 function createCode() {
 	return Array.from(new Array(40), (x, i) => random.choose(codeChoices));
