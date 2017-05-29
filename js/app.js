@@ -620,6 +620,13 @@ return {
 	},
 	computed: {
 		elements: town => Array.from(town.values())
+	},
+	methods: {
+		createAnother: function() {
+			this.set({
+				town: index_1(),
+			});
+		}
 	}
 }
 
@@ -636,9 +643,23 @@ function create_main_fragment$2 ( state, component ) {
 		each_block_iterations[i].mount( table, null );
 	}
 
+	var text = createText( "\n\n" );
+	var p = createElement( 'p' );
+	var button = createElement( 'button' );
+	appendNode( button, p );
+
+	function click_handler ( event ) {
+		component.createAnother();
+	}
+
+	addEventListener( button, 'click', click_handler );
+	appendNode( createText( "Generate another" ), button );
+
 	return {
 		mount: function ( target, anchor ) {
 			insertNode( table, target, anchor );
+			insertNode( text, target, anchor );
+			insertNode( p, target, anchor );
 		},
 
 		update: function ( changed, state ) {
@@ -662,8 +683,12 @@ function create_main_fragment$2 ( state, component ) {
 		destroy: function ( detach ) {
 			destroyEach( each_block_iterations, false, 0 );
 
+			removeEventListener( button, 'click', click_handler );
+
 			if ( detach ) {
 				detachNode( table );
+				detachNode( text );
+				detachNode( p );
 			}
 		}
 	};
@@ -727,7 +752,7 @@ function Town$1 ( options ) {
 	if ( options.target ) this._fragment.mount( options.target, null );
 }
 
-assign( Town$1.prototype, proto );
+assign( Town$1.prototype, template$1.methods, proto );
 
 Town$1.prototype._set = function _set ( newState ) {
 	var oldState = this._state;

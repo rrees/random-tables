@@ -8,6 +8,8 @@
 {{/each}}
 </table>
 
+<p><button on:click="createAnother()">Generate another</button></p>
+
 <script>
 
 import {generate} from 'ryuutama-town-generator';
@@ -24,6 +26,13 @@ export default {
 	},
 	computed: {
 		elements: town => Array.from(town.values())
+	},
+	methods: {
+		createAnother: function() {
+			this.set({
+				town: generate(),
+			});
+		}
 	}
 }
 
