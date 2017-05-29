@@ -772,6 +772,13 @@ return {
 	computed: {
 		code: (codeSequence) => codeSequence.join(""),
 		length: (codeSequence) => codeSequence.length,
+	},
+	methods: {
+		generate: function() {
+			this.set({
+				codeSequence: createCode(),
+			});
+		}
 	}
 }
 
@@ -791,6 +798,15 @@ function create_main_fragment$3 ( state, component ) {
 	appendNode( createText( "Length: " ), p_2 );
 	var text_5 = createText( text_5_value = state.length );
 	appendNode( text_5, p_2 );
+	var text_6 = createText( "\n\n" );
+	var button = createElement( 'button' );
+
+	function click_handler ( event ) {
+		component.generate();
+	}
+
+	addEventListener( button, 'click', click_handler );
+	appendNode( createText( "Create another" ), button );
 
 	return {
 		mount: function ( target, anchor ) {
@@ -799,6 +815,8 @@ function create_main_fragment$3 ( state, component ) {
 			insertNode( p_1, target, anchor );
 			insertNode( text_3, target, anchor );
 			insertNode( p_2, target, anchor );
+			insertNode( text_6, target, anchor );
+			insertNode( button, target, anchor );
 		},
 
 		update: function ( changed, state ) {
@@ -812,12 +830,16 @@ function create_main_fragment$3 ( state, component ) {
 		},
 
 		destroy: function ( detach ) {
+			removeEventListener( button, 'click', click_handler );
+
 			if ( detach ) {
 				detachNode( p );
 				detachNode( text_1 );
 				detachNode( p_1 );
 				detachNode( text_3 );
 				detachNode( p_2 );
+				detachNode( text_6 );
+				detachNode( button );
 			}
 		}
 	};
@@ -844,7 +866,7 @@ function Code ( options ) {
 	if ( options.target ) this._fragment.mount( options.target, null );
 }
 
-assign( Code.prototype, proto );
+assign( Code.prototype, template$2.methods, proto );
 
 Code.prototype._set = function _set ( newState ) {
 	var oldState = this._state;

@@ -5,6 +5,8 @@
 
 <p>Length: {{length}}</p>
 
+<button on:click="generate()">Create another</button>
+
 <script>
 
 import random from '../random/index';
@@ -25,6 +27,13 @@ export default {
 	computed: {
 		code: (codeSequence) => codeSequence.join(""),
 		length: (codeSequence) => codeSequence.length,
+	},
+	methods: {
+		generate: function() {
+			this.set({
+				codeSequence: createCode(),
+			});
+		}
 	}
 }
 
